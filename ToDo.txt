@@ -1,0 +1,3 @@
+export JAVA_OPTS="-javaagent:/home/sascha/.IntelliJIdea11/config/plugins/jr-ide-idea/lib/jrebel/jrebel.jar=org.codehaus.griffon.cli.support.GriffonRootLoader,org.codehaus.groovy.tools.RootLoader -Drebel.log=true -Drebel.log.file=/tmp/rebel.log"
+
+
