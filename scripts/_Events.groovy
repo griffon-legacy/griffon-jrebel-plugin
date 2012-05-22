@@ -22,44 +22,45 @@ import static griffon.util.GriffonNameUtils.isBlank
  */
 
 eventRunAppStart = {
-	if(Environment.current != Environment.DEVELOPMENT) return
-	String jrebelHomeEnv = ant.project.properties['environment.JREBEL_HOME']
-	if (isBlank(jrebelHomeEnv)) {
-		println """
-			| Environmental variable JREBEL_HOME is not defined.
-			| The application will run with JRebel disabled.
-			|""".stripMargin()
-		return
-	}
-	
-	File jrebelHome = new File(jrebelHomeEnv)
-	if (!jrebelHome.exists()) {
-		println """
-			| Environmental variable JREBEL_HOME points to an non-existent path
-			|	\$JREBEL_HOME = $JREBEL_HOME
-			| The application will run with JRebel disabled.
-			|""".stripMargin()
-		return
-	}
-	
-	File jrebelJar = new File(jrebelHome, 'jrebel.jar')
-	if (!jrebelJar.exists()) {
-		println """
-			| jrebel.jar could not be found at the following path
-			|	$jrebelJar
-			| The application will run with JRebel disabled.
-			|""".stripMargin()
-		return
-	}
-	
-	if (!buildConfig.griffon.app.jvmOpts) buildConfig.griffon.app.jvmOpts = []
-	String jrebelAgent = "-javaagent:${jrebelJar.canonicalPath}".toString()
-	if (!buildConfig.griffon.app.jvmOpts.contains(jrebelAgent)) {
-		buildConfig.griffon.app.jvmOpts << jrebelAgent
-	}
-	
-	if (!buildConfig.griffon.app.javaOpts) buildConfig.griffon.app.javaOpts = []
-	for (option in buildConfig.jrebel.options) {
-		if (option) buildConfig.griffon.app.javaOpts << option
-	}
+    if(Environment.current != Environment.DEVELOPMENT) return
+    String jrebelHomeEnv = ant.project.properties['environment.JREBEL_HOME']
+    if (isBlank(jrebelHomeEnv)) {
+        println """
+            | Environmental variable JREBEL_HOME is not defined.
+            | The application will run with JRebel disabled.
+            |""".stripMargin()
+        return
+    }
+
+    File jrebelHome = new File(jrebelHomeEnv)
+    if (!jrebelHome.exists()) {
+        println """
+            | Environmental variable JREBEL_HOME points to an non-existent path
+            |   \$JREBEL_HOME = $JREBEL_HOME
+            | The application will run with JRebel disabled.
+            |""".stripMargin()
+        return
+    }
+
+    File jrebelJar = new File(jrebelHome, 'jrebel.jar')
+    if (!jrebelJar.exists()) {
+        println """
+            | jrebel.jar could not be found at the following path
+            |   $jrebelJar
+            | The application will run with JRebel disabled.
+            |""".stripMargin()
+        return
+    }
+
+    if (!buildConfig.griffon.app.jvmOpts) buildConfig.griffon.app.jvmOpts = []
+    String jrebelAgent = "-javaagent:${jrebelJar.canonicalPath}".toString()
+    if (!buildConfig.griffon.app.jvmOpts.contains(jrebelAgent)) {
+        buildConfig.griffon.app.jvmOpts << jrebelAgent
+    }
+
+    if (!buildConfig.griffon.app.javaOpts) buildConfig.griffon.app.javaOpts = []
+    for (option in buildConfig.jrebel.options) {
+        if (!option.startsWith('-D')) option = '-D' + option
+        buildConfig.griffon.app.javaOpts << option
+    }
 }

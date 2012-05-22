@@ -21,7 +21,7 @@ class JrebelGriffonPlugin {
     // the plugin version
     String version = '0.1'
     // the version or versions of Griffon the plugin is designed for
-    String griffonVersion = '0.9.6 > *'
+    String griffonVersion = '1.0.0 > *'
     // the other plugins this plugin depends on
     Map dependsOn = [:]
     // resources that are included in plugin packaging
@@ -51,16 +51,71 @@ class JrebelGriffonPlugin {
     String title = "JRebel support"
     // accepts Markdown syntax. See http://daringfireball.net/projects/markdown/ for details
     String description = '''
-[JRebel][1].
+[JRebel][1] is a JVM-plugin that makes it possible for Java developers to instantly see any code change made to an app without redeploying.
+JRebel lets you see code changes instantly, versioning classes and resources individually and updating one at a time instead of as a lump
+application redeploy. Have a look at the [feature list][2] and see how it compares to the alternatives.
+
+This plugin allows hot reloading of Controller, Model, Services and any other regular Groovy and Java classes. However it won't reload Views
+nor any classes related to Views. You'll still have to restart the application Whenever a change is made that alters how Views are handlded
+or bound to Models and Controllers.
 
 Usage
 -----
+
+First obtain a license from [JRebel site][3]. Place it under `$USER_HOME/.jrebel`.
+Next define an environment variable `JREBEL_HOME` pointing to the directory where you unzipped the JRebel [download package][3] - or the
+directory where `jrebel.jar` can be found.
+
+Start the application by typing
+
+        $ griffon run-app
+
+If `JREBEL_HOME` was configured successfully and a valid license was found then you'll see the JREBEL banner appearing on the console.
+Now, to trigger class reloading you must first make some changes and recompile the classes while the application is still running. Start
+`griffonsh` on another console shell, this will allow for faster compilation cycles as shown in the following session.
+
+        $ griffonsh
+        Welcome to Griffon 1.0.0 - http://griffon.codehaus.org/
+        Licensed under Apache Standard License 2.0
+        Griffon home is set to: /usr/local/griffon
+
+        Type 'exit' or ^D to terminate this interactive shell
+
+
+        griffon> compile
+        Resolving dependencies...
+        Dependencies resolved in 602ms.
+        Environment set to development
+        Resolving framework plugin dependencies ...
+        Framework plugin dependencies resolved in 698 ms.
+        Resolving plugin dependencies ...
+        Plugin dependencies resolved in 558 ms.
+         [griffonc] Compiling 1 source file to /Users/aalmiray/.griffon/1.0.0/projects/sample/classes/main
+        griffon> compile
+        Resolving dependencies...
+        Dependencies resolved in 1ms.
+        Resolving framework plugin dependencies ...
+        Framework plugin dependencies resolved in 586 ms.
+        Resolving plugin dependencies ...
+        Plugin dependencies resolved in 445 ms.
+         [griffonc] Compiling 1 source file to /Users/aalmiray/.griffon/1.0.0/projects/sample/classes/main
+        griffon>
 
 
 Configuration
 -------------
 
+You may specify JRebel settings in either `BuildConfig.groovy` or `$USER_HOME/.griffon/settings.groovy`. These settings are passed as
+System properties directly to the JRebel JVM agent. Use `jrebel.options` as a prefix. For example, setting the name and location for the
+JRebel log file can be done in this way
+
+        jrebel.options = [
+            'rebel.log=true',
+            'rebel.log.file=/tmp/jrebel.log'
+        ]
 
 [1]: http://zeroturnaround.com/jrebel
+[2]: http://zeroturnaround.com/software/jrebel/features/
+[3]: http://zeroturnaround.com/software/jrebel/download/
 '''
 }
