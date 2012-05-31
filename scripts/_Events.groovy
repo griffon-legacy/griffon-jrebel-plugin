@@ -23,26 +23,16 @@ import static griffon.util.GriffonNameUtils.isBlank
 
 eventRunAppStart = {
     if(Environment.current != Environment.DEVELOPMENT) return
-    String jrebelHomeEnv = ant.project.properties['environment.JREBEL_HOME']
-    if (isBlank(jrebelHomeEnv)) {
+
+    if (!buildConfig.jrebel.location) {
         println """
-            | Environmental variable JREBEL_HOME is not defined.
+            | jrebel.location is not defined
             | The application will run with JRebel disabled.
             |""".stripMargin()
         return
     }
 
-    File jrebelHome = new File(jrebelHomeEnv)
-    if (!jrebelHome.exists()) {
-        println """
-            | Environmental variable JREBEL_HOME points to an non-existent path
-            |   \$JREBEL_HOME = $JREBEL_HOME
-            | The application will run with JRebel disabled.
-            |""".stripMargin()
-        return
-    }
-
-    File jrebelJar = new File(jrebelHome, 'jrebel.jar')
+    File jrebelJar = new File(buildConfig.jrebel.location)
     if (!jrebelJar.exists()) {
         println """
             | jrebel.jar could not be found at the following path
